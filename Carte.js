@@ -30,12 +30,11 @@ class Carte {
     for (let i = 0; i < this.nombreColonneTraduit; i++) {
       this.tableauColonnes[i] = new Array(this.nombreCelluleTraduit);
       for (let j = 0; j < this.nombreCelluleTraduit; j++) {
-        this.tableauColonnes[i][j] = new Cellule(i, j, "cellulevide", null);
+        this.tableauColonnes[i][j] = new Cellule(i, j, "cellulevide", null, true);
       }
     }
   }
 
-// IMPORTANT FAIRE UN SYSTEME BASE SUR UNE BOUCLE NOMBREJOUEUR AVEC INCR
   placerCasesSpeciales() {
     //AJOUT DES CASES SPECIALES
     //JOUEUR1
@@ -44,11 +43,14 @@ class Carte {
       if (caseJoueur1.typeCase == "cellulevide") {
         caseJoueur1.typeCase = "joueur1";
         caseJoueur1.contenu = new Joueur;
+        nouvellePartie.nombreJoueur++;
+        nouvellePartie.premierJoueur = true;
+        
         console.log(caseJoueur1);
         console.log(caseJoueur1.contenu);
         console.log(caseJoueur1.positionY);
         console.log(caseJoueur1.decrire());
-        nouvellePartie.premierJoueur = true;
+        
         
 
       }
@@ -56,14 +58,17 @@ class Carte {
 
         //JOUEUR2
         while (nouvellePartie.deuxiemeJoueur == false) {
-          const celluleInitialeJ2 = this.selectionCelluleAleatoire();
-          if (celluleInitialeJ2.typeCase == "cellulevide") {
-            celluleInitialeJ2.typeCase = "joueur2";
-            this.joueur2 = new Joueur;
-            console.log(this.joueur2);
+          const caseJoueur2 = this.selectionCelluleAleatoire();
+          if (caseJoueur2.typeCase == "cellulevide") {
+            caseJoueur2.typeCase = "joueur2";
+            caseJoueur2.contenu = new Joueur;
+            nouvellePartie.nombreJoueur++;
             nouvellePartie.deuxiemeJoueur = true;
-            
-    
+
+            console.log(caseJoueur2);
+            console.log(caseJoueur2.contenu);
+            console.log(caseJoueur2.positionY);
+            console.log(caseJoueur2.decrire());
           }
         }
 
@@ -83,49 +88,49 @@ class Carte {
 
 
     while (this.nombreArmesPresentes < nouvellePartie.nombreArmes) {
-            const celluleAleatoire = this.selectionCelluleAleatoire();
-      if (celluleAleatoire.typeCase == "cellulevide") {
-        celluleAleatoire.typeCase = mapTypeArmes.get(genererAleatoire(0, 7));
-        switch (celluleAleatoire.typeCase) {
+            const caseArme = this.selectionCelluleAleatoire();
+      if (caseArme.typeCase == "cellulevide") {
+        caseArme.typeCase = mapTypeArmes.get(genererAleatoire(0, 7));
+        switch (caseArme.typeCase) {
           case 'AnneauSimple':
             // créer l'objet AnneauSImple
-            const testArme1 = new AnneauSimple();
-            console.log(testArme1);
+            caseArme.contenu = new AnneauSimple();
+            console.log(caseArme.contenu);
             break;
           case 'AnneauEpique':
             // créer l'objet AnneauEpique
-            const testArme2 = new AnneauEpique();
-            console.log(testArme2);
+            caseArme.contenu = new AnneauEpique();
+            console.log(caseArme.contenu);
             break;
           case 'BouclierSimple':
             // créer l'objet BouclierSimple
-            const testArme3 = new BouclierSimple();
-            console.log(testArme3);
+            caseArme.contenu = new BouclierSimple();
+            console.log(caseArme.contenu);
             break;
           // créer l'objet BouclierEpique
           case 'BouclierEpique':
-            const testArme4 = new BouclierEpique();
-            console.log(testArme4);
+            caseArme.contenu = new BouclierEpique();
+            console.log(caseArme.contenu);
             break;
           case 'EpeeSimple':
             // créer l'objet EpeeSimple
-            const testArme5 = new EpeeSimple();
-            console.log(testArme5);
+             caseArme.contenu = new EpeeSimple();
+            console.log(caseArme.contenu);
             break;
           case 'EpeeEpique':
             // créer l'objet EpeeEpique
-            const testArme6 = new EpeeEpique();
-            console.log(testArme6);
+            caseArme.contenu = new EpeeEpique();
+            console.log(caseArme.contenu);
             break;
           case 'CasqueSimple':
             // créer l'objet CasqueSimple
-            const testArme7 = new CasqueSimple();
-            console.log(testArme7);
+            caseArme.contenu = new CasqueSimple();
+            console.log(caseArme.contenu);
             break;
           case 'CasqueEpique':
             // créer l'objet CasqueEpique
-            const testArme8 = new CasqueEpique();
-            console.log(testArme8);
+            caseArme.contenu = new CasqueEpique();
+            console.log(caseArme.contenu);
             break;
 
         }
@@ -140,9 +145,10 @@ class Carte {
     // CELLULE GRISE verification nombre et ajout si besoin
 
     while (this.nombreCellulesGrisesPresentes < nouvellePartie.nombreCellulesGrises) {
-      const celluleAleatoire = this.selectionCelluleAleatoire();
-      if (celluleAleatoire.typeCase === "cellulevide") {
-        celluleAleatoire.typeCase = 'cellulegrise';
+      const caseBlocGris = this.selectionCelluleAleatoire();
+      if (caseBlocGris.typeCase === "cellulevide") {
+        caseBlocGris.typeCase = 'cellulegrise';
+        caseBlocGris.traversable = false; 
         this.nombreCellulesGrisesPresentes++;
       }
     }

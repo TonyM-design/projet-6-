@@ -8,10 +8,7 @@
       this.attaque = 20;
       this.defense = 15;
       this.equipement = null; 
-      this.positionInitialeX = '';
-      this.positionInitialeY = '' ;
-      this.positionFinaleX = '';
-      this.positionFinaleY = '';// id cellule hebergeant Joueur1;
+
     }
     // Renvoie la description du personnage
     decrirePersonnage() {
@@ -27,7 +24,9 @@ class Joueur extends Personnage {
     super(nom,sante, attaque, defense, equipement);
     this.positionInitialeX = '';
     this.positionInitialeY = '' ;
-    this.joueurNumero = "1";
+    this.positionFinaleX = '';
+    this.positionFinaleY = '';
+    this.joueurNumero = nouvellePartie.nombreJoueur;
 
     }
     

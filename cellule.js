@@ -1,9 +1,10 @@
 class Cellule {
-    constructor(positionX, positionY, typeCase, contenu){
+    constructor(positionX, positionY, typeCase, contenu, traversable){
         this.positionX = positionX;
         this.positionY = positionY;
         this.typeCase = typeCase;
         this.contenu = contenu;
+        this.traversable = traversable;
     }
     decrire(){
       console.log(`${this.positionX} + ${this.positionY} / ${this.typeCase} / ${this.contenu}`);
@@ -23,11 +24,6 @@ class Cellule {
     celluleArme(){
         this.typeCase = new Arme.typeCase; 
     }
-    selectionCelluleAleatoire(){
-    this.positionX = genererAleatoire(0, Jeu.nombreColonneTraduit);
-    this.positionY = genererAleatoire(0, Jeu.nombreCelluleTraduit);
 
-
-    }
 }
 
