@@ -8,6 +8,7 @@
       this.attaque = 20;
       this.defense = 15;
       this.equipement = null; 
+      this.actif = false;
 
     }
     // Renvoie la description du personnage
@@ -20,15 +21,19 @@
   }
 
 class Joueur extends Personnage {
-  constructor(nom, sante, attaque, defense, equipement) {
-    super(nom,sante, attaque, defense, equipement);
-    this.positionInitialeX = '';
-    this.positionInitialeY = '' ;
-    this.positionFinaleX = '';
-    this.positionFinaleY = '';
-    this.joueurNumero = nouvellePartie.nombreJoueur;
+  constructor(joueurNumero,positionX,positionY) {
+    super();
+    this.positionX = positionX;
+    this.positionY = positionY ;
+    this.joueurNumero = joueurNumero
+    
 
     }
+ 
+
+
+
+    
     
     obtenirPosition(){
       console.log(`${this.positionX} + ${this.positionY}`);

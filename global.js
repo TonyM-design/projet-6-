@@ -36,3 +36,4 @@ function parametrerNombreCellules(){
   } while (Jeu.nombreCelluleTraduit <= 0 || isNaN(Jeu.nombreCelluleTraduit));
   return Jeu.nombreCelluleTraduit;
 }
+
