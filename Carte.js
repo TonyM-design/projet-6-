@@ -1,51 +1,65 @@
 class Carte {
-  constructor() {
-    this.nombreColonneTraduit = Jeu.nombreColonneTraduit;
-    this.nombreCelluleTraduit = Jeu.nombreCelluleTraduit;
-    this.nombreArmes = Jeu.nombreArmes;
-    this.nombreCelluleGrise = Jeu.nombreCelluleGrise;
+  constructor(nombreColonne, nombreCellule, nombreArmes, nombreCelluleGrise, listeJoueurs ) {
+    this.nombreColonne = nombreColonne; 
+    this.nombreCellule = nombreCellule; 
+    this.nombreArmes = nombreArmes;
+    this.nombreCelluleGrise = nombreCelluleGrise;
     this.nombreArmesPresentes = '';
     this.nombreCellulesGrisesPresentes = '';
 
     this.tableauColonnes = [];
-    this.nombreJoueur  = 0;
+    this.listeJoueurs = listeJoueurs;
   }
-
-
-
-  selectionCelluleAleatoire() {
-    const positionX = genererAleatoire(0, this.nombreColonneTraduit);
-    const positionY = genererAleatoire(0, this.nombreCelluleTraduit);
-    return this.tableauColonnes[positionX][positionY];
-
-
-  }
-  
-  
-
 
   genererCarteVierge() {
     // CREATION TABLEAU DEUX DIMENSIONS STOCKAGE OBJ CELLULEVIDE 
-    this.tableauColonnes = new Array(this.nombreColonneTraduit);
-    for (let i = 0; i < this.nombreColonneTraduit; i++) {
-      this.tableauColonnes[i] = new Array(this.nombreCelluleTraduit);
-      for (let j = 0; j < this.nombreCelluleTraduit; j++) {
+    this.tableauColonnes = new Array(this.nombreColonne);
+    for (let i = 0; i < this.nombreColonne; i++) {
+      this.tableauColonnes[i] = new Array(this.nombreCellule);
+      for (let j = 0; j < this.nombreCellule; j++) {
         this.tableauColonnes[i][j] = new Cellule(i, j, "cellulevide", null, true);
       }
     }
   }
 
+ ajouterVisuelJoueurActif() { 
+   this.listeJoueurs.forEach(function(listeJoueur){
+     if (listeJoueur.actif == true && listeJoueur.numeroJoueur == 1){
+      $(".joueur1").addClass("actif");
+      $(".joueur2").removeClass("actif");
+     }
+
+     else { $(".joueur2").addClass("actif");
+     $(".joueur1").removeClass("actif"); }
+
+   })
+
+ }
 
 
+  selectionCelluleAleatoire() {
+    const positionX = genererAleatoire(0, this.nombreColonne);
+    const positionY = genererAleatoire(0, this.nombreCellule);
+    return this.tableauColonnes[positionX][positionY];
+
+
+  }
 
   // PLACEMENT DES CASES SPECIALES
-
+// boucler l'affichage la verification de la présence
 ajouterJoueurCarte(){
-nouvellePartie.listeJoueurs.forEach(function(listeJoueur){
-  const caseJoueur = genCarte.tableauColonnes [listeJoueur.positionX][listeJoueur.positionY];
-  caseJoueur.typeCase = `joueur${listeJoueur.joueurNumero}`
-});
+this.listeJoueurs.forEach(function(listeJoueur){  
+  const caseJoueur = nouvellePartie.carte.selectionCelluleAleatoire();
+  if (caseJoueur.typeCase == "cellulevide"){
+  caseJoueur.typeCase = `joueur${listeJoueur.numeroJoueur}`;
+  caseJoueur.contenu = listeJoueur;
+listeJoueur.positionX = caseJoueur.positionX;
+listeJoueur.positionY = caseJoueur.positionY;
 }
+}
+);
+}
+
     
 
 ajouterArmeCarte(){
@@ -60,8 +74,8 @@ ajouterArmeCarte(){
         [7, 'CasqueEpique'],
     
         ])
-        while (genCarte.nombreArmesPresentes < nouvellePartie.nombreArmes) {
-        const caseArme = genCarte.selectionCelluleAleatoire();
+        while (this.nombreArmesPresentes < nouvellePartie.nombreArmes) {
+        const caseArme = this.selectionCelluleAleatoire();
       if (caseArme.typeCase == "cellulevide") {
         caseArme.typeCase = mapTypeArmes.get(genererAleatoire(0, 7));
         switch (caseArme.typeCase) {
@@ -108,7 +122,7 @@ ajouterArmeCarte(){
 
         }
 
-        genCarte.nombreArmesPresentes++;
+       this.nombreArmesPresentes++;
 
       }
     }
@@ -117,12 +131,12 @@ ajouterArmeCarte(){
 
 
 ajouterBlocGrisCarte() {          
-    while (genCarte.nombreCellulesGrisesPresentes < nouvellePartie.nombreCellulesGrises) {
-        const caseBlocGris = genCarte.selectionCelluleAleatoire();
+    while (this.nombreCellulesGrisesPresentes < nouvellePartie.nombreCellulesGrises) {
+        const caseBlocGris = this.selectionCelluleAleatoire();
         if (caseBlocGris.typeCase === "cellulevide") {
           caseBlocGris.typeCase = 'cellulegrise';
           caseBlocGris.traversable = false; 
-          genCarte.nombreCellulesGrisesPresentes++;
+          this.nombreCellulesGrisesPresentes++;
         }
       }
     }
@@ -132,10 +146,10 @@ ajouterBlocGrisCarte() {
   //PLACEMENT DES CELLULES DANS LE TABLE HTML
 
 placerTableHTML() {
-    for (let i = 0; i < genCarte.nombreColonneTraduit; i++) {
+    for (let i = 0; i < this.nombreColonne; i++) {
       $('#plateaudejeu').append(`<tr class="rangeetablejeu" id="rangee${i}"></tr>`);
-      for (let j = 0; j < genCarte.nombreCelluleTraduit; j++) {
-        $('#rangee' + i).append(`<td class="${genCarte.tableauColonnes[i][j].typeCase}" id="cellule${i}${j}"></td>`);
+      for (let j = 0; j < this.nombreCellule; j++) {
+        $('#rangee' + i).append(`<td class="${this.tableauColonnes[i][j].typeCase}" id="cellule${i}${j}"></td>`);
 
       }
     }

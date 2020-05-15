@@ -24,8 +24,8 @@ class Joueur extends Personnage {
   constructor(joueurNumero,positionX,positionY) {
     super();
     this.positionX = positionX;
-    this.positionY = positionY ;
-    this.joueurNumero = joueurNumero
+    this.positionY = positionY;
+    this.joueurNumero = joueurNumero;
     
 
     }
