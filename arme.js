@@ -8,6 +8,19 @@ class Arme {
 }
 
 
+class Dague extends Arme {
+  constructor(nom, bonusAttaque, bonusDefense, portee) {
+    super(nom,bonusAttaque, bonusDefense, portee);
+
+    // specifique a Dague
+    this.nom = "Dague";
+    this.bonusAttaque = 10;
+    this.bonusDefense = 0;
+    this.portee = 1;
+  }
+}
+
+
   class AnneauEpique extends Arme {
     constructor(nom, bonusAttaque, bonusDefense, portee) {
       super(nom,bonusAttaque, bonusDefense, portee);
@@ -88,7 +101,7 @@ class Arme {
       this.nom = "Casque Simple";
       this.bonusAttaque = 0;
       this.bonusDefense = 40;
-      this.portee = 0;
+      this.portee = 1;
     }
   }
 
