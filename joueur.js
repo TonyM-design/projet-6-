@@ -7,7 +7,7 @@
       this.sante = 100;
       this.attaque = 20;
       this.defense = 15;
-      this.equipement = new Dague; 
+      this.equipements = [new Dague]; 
       this.actif = false;
 
     }
@@ -27,7 +27,8 @@ class Joueur extends Personnage {
     this.positionX = positionX;
     this.positionY = positionY;
     this.presenceValide = false;
-    this.compteurDeplacement = 3
+    this.compteurDeplacement = 3;
+    this.directionDeplacement = null;
 
     
 

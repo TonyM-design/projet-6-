@@ -26,7 +26,7 @@ class Dague extends Arme {
       super(nom,bonusAttaque, bonusDefense, portee);
   
       // specifique a AnneauEpique
-      this.nom = "Anneau Epique";
+      this.nom = "AnneauEpique";
       this.bonusAttaque = 50;
       this.bonusDefense = 40;
       this.portee = 4;
@@ -38,7 +38,7 @@ class Dague extends Arme {
       super(nom,bonusAttaque, bonusDefense, portee);
   
       // specifique a AnneauSimple
-      this.nom = "Anneau Simple";
+      this.nom = "AnneauSimple";
       this.bonusAttaque = 10;
       this.bonusDefense = 20;
       this.portee = 2;
@@ -50,7 +50,7 @@ class Dague extends Arme {
       super(nom,bonusAttaque, bonusDefense, portee);
   
       // specifique a BouclierSimple
-      this.nom = "Bouclier Simple";
+      this.nom = "BouclierSimple";
       this.bonusAttaque = 0;
       this.bonusDefense = 40;
       this.portee = 1;
@@ -62,7 +62,7 @@ class Dague extends Arme {
       super(nom,bonusAttaque, bonusDefense, portee);
   
       // specifique a BouclierEpique
-      this.nom = "Bouclier Epique";
+      this.nom = "BouclierEpique";
       this.bonusAttaque = 20;
       this.bonusDefense = 40;
       this.portee = 1;
@@ -74,7 +74,7 @@ class Dague extends Arme {
       super(nom,bonusAttaque, bonusDefense, portee);
   
       // specifique a EpeeSimple
-      this.nom = "Epee Simple";
+      this.nom = "EpeeSimple";
       this.bonusAttaque = 20;
       this.bonusDefense = 10;
       this.portee = 1;
@@ -98,7 +98,7 @@ class Dague extends Arme {
       super(nom,bonusAttaque, bonusDefense, portee);
   
       // specifique a CasqueSimple
-      this.nom = "Casque Simple";
+      this.nom = "CasqueSimple";
       this.bonusAttaque = 0;
       this.bonusDefense = 40;
       this.portee = 1;
@@ -110,7 +110,7 @@ class Dague extends Arme {
       super(nom,bonusAttaque, bonusDefense, portee);
   
       // specifique a CasqueEpique
-      this.nom = "Epee Epique";
+      this.nom = "EpeeEpique";
       this.bonusAttaque = 60;
       this.bonusDefense = 30;
       this.portee = 1;
