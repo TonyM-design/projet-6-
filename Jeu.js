@@ -5,8 +5,8 @@ class Jeu {
     this.listeJoueurs = [];
     this.fileAttentes = this.listeJoueurs;
     this.joueurActif = null;
-    this.nombreArmes = 15;
-    this.nombreCellulesGrises = 5;
+    this.nombreArmes = 4;
+    this.nombreCellulesGrises = 15;
     this.initialiserParametreJeu();
 
     this.carte = new Carte(this.nombreColonne, this.nombreCellule, this.nombreArmes, this.nombreCellulesGrises, this.listeJoueurs);
@@ -83,7 +83,7 @@ class Jeu {
     const joueurActifSuivant = this.fileAttentes[1]; // on choisit le joueur ayant l'indice suivant du joueurActif donc 1
     joueurActifSuivant.actif = true; // valide etat actif
     this.fileAttentes.unshift(joueurActifSuivant); // on instance le joueur suivant et place en indice 0
-        // on supprime instance initiale
+    // on supprime instance initiale
     const cloneSupprimer = this.fileAttentes.indexOf(joueurActifSuivant, 1);
     this.fileAttentes.splice(this.fileAttentes.indexOf(cloneSupprimer, 2), 1);
     console.log(this.fileAttentes)
@@ -91,16 +91,16 @@ class Jeu {
 
   }
 
-  actualiserOrdreFileAttente(){
-     // on supprime instance initiale
-     const cloneSupprimer = this.fileAttentes.indexOf(this.fileAttentes[0], 1);
-     this.fileAttentes.splice(cloneSupprimer, 1);
-     console.log(this.fileAttentes);
-     return this.fileAttentes;
+  actualiserOrdreFileAttente() {
+    // on supprime instance initiale
+    const cloneSupprimer = this.fileAttentes.indexOf(this.fileAttentes[0], 1);
+    this.fileAttentes.splice(cloneSupprimer, 1);
+    console.log(this.fileAttentes);
+    return this.fileAttentes;
   }
 
   choisirJoueurActifDepartAleatoire() {
-    const joueurActifDepartAleatoire = this.fileAttentes[genererAleatoire(0, this.fileAttentes.length )]; // on choisit un joueur aleatoire dans la liste
+    const joueurActifDepartAleatoire = this.fileAttentes[genererAleatoire(0, this.fileAttentes.length)]; // on choisit un joueur aleatoire dans la liste
     joueurActifDepartAleatoire.actif = true; // applique etat actif = true
     const cloneJoueur = joueurActifDepartAleatoire; // on instance le joueur
     console.log(this.fileAttentes);
@@ -109,337 +109,223 @@ class Jeu {
     return this.fileAttentes;
   }
 
-// tour par tour fonctionne 
+  // tour par tour fonctionne 
 
 
-// GESTION ARME
+  // GESTION ARME
   recupererArme(caseAdjacenteChoixJoueurActif) {
-      this.joueurActif.equipements.unshift(caseAdjacenteChoixJoueurActif.contenu);
-    }
-    
-  
-
-  deposerArme() { // A RETRAVAILLER
-     if (this.joueurActif.equipements.length === 2) {
-       this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].contenu = this.joueurActif.equipements[1]; 
-       this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].typeCase = `${this.joueurActif.equipements[1].nom}`;
-       this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].traversable = true;
-       console.log("test propriete deposerArme");
-
-return true
-     }  
+    this.joueurActif.equipements.unshift(caseAdjacenteChoixJoueurActif.contenu);
   }
 
 
 
-majEquipements2 (){
-  if (this.deposerArme() === true){  
-    console.log("test propriete majEquipement");
- this.joueurActif.equipements.pop();
- this.carte.rafraichirTableHTML();
-}}
+  deposerArme() {
+    if (this.joueurActif.equipements.length === 2) {
+      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].contenu = this.joueurActif.equipements[1];
+      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].typeCase = `${this.joueurActif.equipements[1].nom}`;
+      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].traversable = true;
+      console.log("test propriete deposerArme");
+
+      return true
+    }
+  }
 
 
 
+  majEquipements2() {
+    if (this.carte.actualiserCellulePostDeplacement() === true) {
+      console.log("test propriete majEquipement");
+      this.joueurActif.equipements.pop();
+
+    }
+  }
+
+  actualiserCellulePostDeplacement() { //  A PLACER DANS CARTE !!!!
+    if (this.joueurActif.equipements.length === 1) {
+      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].contenu = null;
+      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].typeCase = "celluleVide";
+      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].traversable = true;
+    }
+    else {
+      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].contenu = this.joueurActif.equipements[1];
+      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].typeCase = `${this.joueurActif.equipements[1].nom}`;
+      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].traversable = true;
+      console.log("arme deposee dans la cellule");
+      return true;
+    }
+  }
+
+  gererExceptionPremierDeplacement(valeur, valeur2){ // verifierCaseAdjacenteDirection() / this.carte.caseDirection
+    if (valeur !== true && this.joueurActif.compteurDeplacement === 3) {
+  
+      if (this.joueurActif.compteurDeplacement === 3) {
+        console.log("cette case n'existe pas");
+        this.joueurActif.directionDeplacement = null;
+        return true;
+      }
+      if (this.joueurActif.compteurDeplacement === 3 && valeur2.typeCase === "cellulegrise") {
+        console.log("cette case n'est pas traversable");
+        this.joueurActif.directionDeplacement = null;
+        return true;
+      }
+
+    }
+    else {return false}
+}
+
+
+gererExceptionDeplacement2(verifierCaseDirectionDeplacement, verifierCaseDirectionTraversable, carteCaseDirection, valeurDirectionDplacementJoueur){
+// EXCEPTION PREMIER TOUR
+  if ( this.joueurActif.compteurDeplacement === 3){
+   if (verifierCaseDirectionDeplacement === false){
+    console.log("cette case n'existe pas");
+    this.joueurActif.directionDeplacement = null;     
+   }
+   else if  ( carteCaseDirection.typeCase === "cellulegrise"){
+    console.log("cette case n'est pas traversable");
+    this.joueurActif.directionDeplacement = null;
+   }
+
+ }
+// FIN EXCEPTION PREMIER TOUR
+
+// OCCURENCE CHANGEMENT DE DIRECTION DURANT DEPLACEMENT
+else if (this.joueurActif.directionDeplacement !== null && this.joueurActif.directionDeplacement !== valeurDirectionDplacementJoueur ){
+  console.log("deplacement autorisé uniquement sur le même axe");
+}
+// OCCURENCE PRESENCE D'UN JOUEUR SUR LA CASE DE DESTINATION
+ else if (verifierCaseDirectionDeplacement === true && verifierCaseDirectionTraversable === false && carteCaseDirection.typeCase !== "cellulegrise") {
+  console.log("Un joueur est present sur la case, debut phase de combat");
+  this.joueurActif.directionDeplacement = null;
+  this.joueurActif.compteurDeplacement = 0;
+  this.carte.enleverVisuelJoueurActif(this.joueurActif);
+}
+
+// OCCURENCE OBSTACLE OU CASE INEXISTANTE 
+else if ((verifierCaseDirectionDeplacement === false || verifierCaseDirectionTraversable === false) && this.joueurActif.compteurDeplacement <= 2) {
+  this.joueurActif.compteurDeplacement = 0;
+  this.carte.enleverVisuelJoueurActif(this.joueurActif);
+  console.log("aucune case disponible au deplacement sur le même axe, fin du deplacement")
+}
+
+}
+
+
+  majProprietesJoueurActif() {
+    if (event.which == 37) {
+      this.joueurActif.positionY--;
+      this.joueurActif.compteurDeplacement--;
+      this.joueurActif.directionDeplacement = "gauche";
+    }
+    else if (event.which == 38) {
+      this.joueurActif.positionX--
+      this.joueurActif.compteurDeplacement--;
+      this.joueurActif.directionDeplacement = "haut";
+    }
+    else if (event.which == 39) {
+      this.joueurActif.positionY++
+      this.joueurActif.compteurDeplacement--;
+      this.joueurActif.directionDeplacement = "droite";
+    }
+    else if (event.which == 40) {
+      this.joueurActif.positionX++
+      this.joueurActif.compteurDeplacement--;
+      this.joueurActif.directionDeplacement = "bas";
+    }
+  }
+
+  
+effectuerDeplacementJoueur(verifierCaseDirectionDeplacement,  verifierCaseDirectionTraversable, carteCaseDirection, valeurDirectionDplacementJoueur){
+  if ((verifierCaseDirectionDeplacement === true) && (this.joueurActif.directionDeplacement === null || this.joueurActif.directionDeplacement === valeurDirectionDplacementJoueur) && (this.joueurActif.compteurDeplacement !== 0) && verifierCaseDirectionTraversable === true) {
+      console.log("test gauche valide");
+  
+      // SI AU DEPLACEMENT PRECEDENT LE JOUEUR A RECUPERE UNE ARME
+      if (this.joueurActif.equipements.length !== 1) {
+        this.carte.creerStockageEmplacementOrigine(this.joueurActif);
+        this.carte.remplacerParCaseArme(this.joueurActif); // la case arme est créer a l'adresse du contenu de stockageCaseJoueur
+        this.joueurActif.deposerArme(); // on supprime l'arme de l'equipements[]
+        this.carte.remplacerParCaseJoueur(carteCaseDirection); 
+        this.majProprietesJoueurActif();
+        this.carte.rafraichirTableHTML();
+      }
+  
+  
+      // OCCURENCE CASE ARME
+      else if (carteCaseDirection.typeCase !== "celluleVide") {
+        this.carte.creerStockageEmplacementOrigine(this.joueurActif);
+        this.joueurActif.recupererArme(carteCaseDirection);
+        this.carte.remplacerParCelluleVide();
+        this.carte.remplacerParCaseJoueur(carteCaseDirection);
+        this.majProprietesJoueurActif();
+        this.carte.rafraichirTableHTML();
+      }
+  
+      // OCCURENCE CELLULE VIDE
+  
+      else if (carteCaseDirection.typeCase === "celluleVide") {
+        this.carte.creerStockageEmplacementOrigine(this.joueurActif);
+        this.carte.remplacerParCelluleVide();
+        this.carte.remplacerParCaseJoueur(carteCaseDirection);
+        this.majProprietesJoueurActif();
+        this.carte.rafraichirTableHTML();
+  
+      }
+    }
+  
+  
+    this.gererExceptionDeplacement2(verifierCaseDirectionDeplacement,  verifierCaseDirectionTraversable, carteCaseDirection, valeurDirectionDplacementJoueur)
+    this.carte.ajouterVisuelJoueurActif2(this.joueurActif);
+  
+  }
+  
   // DEPLACEMENT JOUEUR
-  verifierSiChangementJoueur(){
-    if (this.joueurActif.compteurDeplacement === 0){
+  verifierSiChangementJoueur() {
+    if (this.joueurActif.compteurDeplacement === 0) {
       console.log("verifierSiChangementJoueur test compteur deplacement = 0")
       this.changerJoueurActif();
       return true;
     }
   }
 
-
   deplacerJoueur() {
     $(document).keydown((event) => {
-     if(this.verifierSiChangementJoueur() === true){
-console.log ("changement de joueur")
-       this.joueurActif.compteurDeplacement = 3;
-       this.joueurActif.directionDeplacement = null;
-     };
-     this.determinerJoueurActif();
-     console.log ("doit apparaitre a chaque appuie de touche ")
-      while (this.joueurActif.compteurDeplacement !== 0) { // a supprimer !
-        this.carte.rafraichirTableHTML();
-
-        // fleche gauche code ascii 37
-        if (event.which == 37) { 
-          if ((this.carte.verifierCaseGaucheDeplacement(this.joueurActif) === true) && (this.joueurActif.directionDeplacement === null || this.joueurActif.directionDeplacement === "gauche") && (this.joueurActif.compteurDeplacement !== 0) && this.carte.verifierCaseGaucheTraversable(this.joueurActif) === true ) {
-              console.log("test gauche valide");
-              // RECUPERATION ARME
-              if (this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY - 1].typeCase !== "celluleVide" ) { // si cette case valide est une arme 
-              this.recupererArme(this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY - 1]);
-              }
-              if (this.joueurActif.equipements.length === 1) {
-                this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].contenu = null;
-                this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].typeCase = "celluleVide";
-                this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].traversable = true;
-              }
-
-              this.majEquipements2();
-              
+      if (this.verifierSiChangementJoueur() === true) {
+        console.log("changement de joueur")
+        this.joueurActif.compteurDeplacement = 3;
+        this.joueurActif.directionDeplacement = null;
+      };
+      this.determinerJoueurActif();
+      console.log("doit apparaitre a chaque appuie de touche ")
+      this.carte.rafraichirTableHTML();
 
 
 
-
-              this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY - 1].contenu = this.joueurActif;
-              this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY - 1].typeCase = `joueur${this.joueurActif.numeroJoueur}`;
-              this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY - 1].traversable = false;
-// MODIFICATION A EFFECTUE
-              this.joueurActif.positionY--;
-              this.joueurActif.compteurDeplacement--;
-              this.joueurActif.directionDeplacement = "gauche";
-              this.carte.rafraichirTableHTML();
-              //this.carte.ajouterVisuelJoueurActif(this.fileAttentes);
-
-              break;
-
-            }
-            // 1er tour de chaque joueur, droit a erreur de direction
-            else if (this.carte.verifierCaseGaucheDeplacement(this.joueurActif) !== true && this.joueurActif.compteurDeplacement === 3 ){
-              console.log("cette case n'existe pas");
-              this.joueurActif.directionDeplacement = null;
-              break;
-            }
-            else if (this.carte.verifierCaseGaucheTraversable(this.joueurActif) !== true && this.joueurActif.compteurDeplacement === 3 &&this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY - 1].typeCase === "cellulegrise" ){
-              console.log("cette case n'est pas traversable");
-              this.joueurActif.directionDeplacement = null;
-              break;
-            }
-
-
-            // presence d'un joueur sur la case adjacente -> demarrer phase de combat automatique
-            else if (this.carte.verifierCaseGaucheDeplacement(this.joueurActif) === true && this.carte.verifierCaseGaucheTraversable(this.joueurActif) !== true && this.carte.tableauColonnes[this.joueurActif.positionX ][this.joueurActif.positionY - 1].typeCase !== "cellulegrise"){
-              console.log("Un joueur est present sur la case, debut phase de combat");
-              this.joueurActif.directionDeplacement = null;
-              this.joueurActif.compteurDeplacement = 0;
-              break;
-            }
-            // occurence d'un obstacle ou case inexistante pendant le deplacement 
-            else if(this.joueurActif.compteurDeplacement <= 2 && (this.carte.verifierCaseGaucheDeplacement(this.joueurActif) !== true || this.carte.verifierCaseGaucheTraversable(this.joueurActif) !== true) ){
-              this.joueurActif.compteurDeplacement = 0;
-              console.log("aucune case disponible au deplacement sur le même axe, fin du deplacement")
-              break;
-            }   
-            // occurence d'un changement de direction pendant le deplacement
-            else if (this.joueurActif.directionDeplacement !== null || this.joueurActif.directionDeplacement !== "gauche") {
-              console.log("deplacement autorisé uniquement sur le même axe");
-              break;
-            }
-        }
-
-
-        // fleche haut  code ascii 38
-        if (event.which == 38) {
-            if ((this.joueurActif.directionDeplacement === null || this.joueurActif.directionDeplacement === "haut") &&(this.carte.verifierCaseHautDeplacement(this.joueurActif) === true) &&(this.joueurActif.compteurDeplacement !== 0) && this.carte.verifierCaseHautTraversable(this.joueurActif) === true ) {
-              console.log("test haut valide");
-              // RECUPERATION ARME
-              if (this.carte.tableauColonnes[this.joueurActif.positionX - 1][this.joueurActif.positionY].typeCase !== "celluleVide" && this.carte.verifierCaseHautTraversable(this.joueurActif) === true) { // si cette case valide est une arme 
-                this.recupererArme(this.carte.tableauColonnes[this.joueurActif.positionX - 1][this.joueurActif.positionY]);
-                }
-
-
-                if (this.joueurActif.equipements.length === 1) {
-                this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].contenu = null;
-                this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].typeCase = "celluleVide";
-                this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].traversable = true;
-              }
-              this.majEquipements2();
-              this.carte.tableauColonnes[this.joueurActif.positionX - 1][this.joueurActif.positionY].contenu = this.joueurActif;
-              this.carte.tableauColonnes[this.joueurActif.positionX - 1][this.joueurActif.positionY].typeCase = `joueur${this.joueurActif.numeroJoueur}`;
-              this.carte.tableauColonnes[this.joueurActif.positionX - 1][this.joueurActif.positionY].traversable = false;
-
-              this.joueurActif.positionX--
-              this.joueurActif.compteurDeplacement--;
-              this.joueurActif.directionDeplacement = "haut";
-              this.carte.rafraichirTableHTML();
-              //this.carte.ajouterVisuelJoueurActif(this.fileAttentes);
-
-              break;
-
-            }
-            // 1er tour de chaque joueur, droit a erreur de direction
-            else if (this.carte.verifierCaseHautDeplacement(this.joueurActif) !== true && this.joueurActif.compteurDeplacement === 3 ){
-              console.log("cette case n'existe pas");
-              this.joueurActif.directionDeplacement = null;
-              break;
-            }
-            else if (this.carte.verifierCaseHautTraversable(this.joueurActif) !== true && this.joueurActif.compteurDeplacement === 3&& this.carte.tableauColonnes[this.joueurActif.positionX - 1][this.joueurActif.positionY].typeCase === "cellulegrise" ){
-              console.log("cette case n'est pas traversable");
-              this.joueurActif.directionDeplacement = null;
-              break;
-            }
-
-
-            // presence d'un joueur sur la case adjacente -> demarrer phase de combat automatique
-            else if (this.carte.verifierCaseHautDeplacement(this.joueurActif) === true && this.carte.verifierCaseHautTraversable(this.joueurActif) !== true && this.carte.tableauColonnes[this.joueurActif.positionX - 1][this.joueurActif.positionY].typeCase !== "cellulegrise"){
-              console.log("Un joueur est present sur la case, debut phase de combat");
-              this.joueurActif.directionDeplacement = null;
-              this.joueurActif.compteurDeplacement = 0;
-              break;
-            }
-            // occurence d'un obstacle ou case inexistante pendant le deplacement 
-            else if(this.joueurActif.compteurDeplacement <= 2 && (this.carte.verifierCaseHautDeplacement(this.joueurActif) !== true || this.carte.verifierCaseHautTraversable(this.joueurActif) !== true) ){
-              this.joueurActif.compteurDeplacement = 0;
-              console.log("aucune case disponible au deplacement sur le même axe, fin du deplacement")
-              break;
-            }   
-            // occurence d'un changement de direction pendant le deplacement
-            else if (this.joueurActif.directionDeplacement !== null || this.joueurActif.directionDeplacement !== "haut") {
-              console.log("deplacement autorisé uniquement sur le même axe");
-              break;
-            }
-        }
-
-
-
-
-        if (event.which == 39) { // fleche droite  code ascii 39
-          
-            if ((this.joueurActif.directionDeplacement === null || this.joueurActif.directionDeplacement === "droite") && (this.carte.verifierCaseDroiteDeplacement(this.joueurActif) === true)&&(this.joueurActif.compteurDeplacement !== 0) && this.carte.verifierCaseDroiteTraversable(this.joueurActif) === true) {
-              console.log("test droite valide");
-              // RECUPERATION ARME
-              if (this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY + 1].typeCase !== "celluleVide" && this.carte.verifierCaseDroiteTraversable(this.joueurActif) === true) { // si cette case valide est une arme 
-              this.recupererArme(this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY + 1]);
-              }
-
-
-              if (this.joueurActif.equipements.length === 1) {
-                this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].contenu = null;
-                this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].typeCase = "celluleVide";
-                this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].traversable = true
-
-              }
-
-              this.majEquipements2();
-
-              this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY + 1].contenu = this.joueurActif;
-              this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY + 1].typeCase = `joueur${this.joueurActif.numeroJoueur}`;
-              this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY + 1].traversable = false;
-
-
-              this.joueurActif.positionY++
-              this.joueurActif.compteurDeplacement--;
-              this.joueurActif.directionDeplacement = "droite";
-              this.carte.rafraichirTableHTML();
-              //this.carte.ajouterVisuelJoueurActif(this.fileAttentes);
-
-              break;
-
-            }
-            // 1er tour de chaque joueur, droit a erreur de direction
-            else if (this.carte.verifierCaseDroiteDeplacement(this.joueurActif) !== true && this.joueurActif.compteurDeplacement === 3 ){
-              console.log("cette case n'existe pas");
-              this.joueurActif.directionDeplacement = null;
-              break;
-            }
-            else if (this.carte.verifierCaseDroiteTraversable(this.joueurActif) !== true && this.joueurActif.compteurDeplacement === 3 && this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY + 1].typeCase ==="cellulegrise" ){
-              console.log("cette case n'est pas traversable");
-              this.joueurActif.directionDeplacement = null;
-              break;
-            }
-
-
-            // presence d'un joueur sur la case adjacente -> demarrer phase de combat automatique
-            else if (this.carte.verifierCaseDroiteDeplacement(this.joueurActif) === true && this.carte.verifierCaseDroiteTraversable(this.joueurActif) !== true && this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY + 1].typeCase !== "cellulegrise"){
-              console.log("Un joueur est present sur la case, debut phase de combat");
-              this.joueurActif.directionDeplacement = null;
-              this.joueurActif.compteurDeplacement = 0;
-              break;
-            }
-            // occurence d'un obstacle ou case inexistante pendant le deplacement 
-            else if(this.joueurActif.compteurDeplacement <= 2 && (this.carte.verifierCaseDroiteDeplacement(this.joueurActif) !== true || this.carte.verifierCaseDroiteTraversable(this.joueurActif) !== true) ){
-              this.joueurActif.compteurDeplacement = 0;
-              console.log("aucune case disponible au deplacement sur le même axe, fin du deplacement")
-              break;
-            }   
-            // occurence d'un changement de direction pendant le deplacement
-            else if (this.joueurActif.directionDeplacement !== null || this.joueurActif.directionDeplacement !== "droite") {
-              console.log("deplacement autorisé uniquement sur le même axe");
-              break;
-            }
-        }
-
-
-
-        if (event.which == 40) { // fleche bas  code ascii 40
-          
-            if ((this.joueurActif.directionDeplacement === null || this.joueurActif.directionDeplacement === "bas") && (this.carte.verifierCaseBasDeplacement(this.joueurActif) === true) && (this.joueurActif.compteurDeplacement !== 0) && this.carte.verifierCaseBasTraversable(this.joueurActif) === true) {
-              console.log("verification compteur deplacement ")
-              
-              console.log("test bas valide");
-              // RECUPERATION ARME
-              if (this.carte.tableauColonnes[this.joueurActif.positionX + 1][this.joueurActif.positionY].typeCase !== "celluleVide" && this.carte.verifierCaseBasTraversable(this.joueurActif) === true) { // si cette case valide est une arme 
-                this.recupererArme(this.carte.tableauColonnes[this.joueurActif.positionX + 1][this.joueurActif.positionY]);
-                }
-
-
-
-                if (this.joueurActif.equipements.length === 1) {
-                this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].contenu = null;
-                this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].typeCase = "celluleVide";
-                this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].traversable = true;
-              }
-
-              this.majEquipements2();
-              this.carte.tableauColonnes[this.joueurActif.positionX + 1][this.joueurActif.positionY].contenu = this.joueurActif;
-              this.carte.tableauColonnes[this.joueurActif.positionX + 1][this.joueurActif.positionY].typeCase = `joueur${this.joueurActif.numeroJoueur}`;
-              this.carte.tableauColonnes[this.joueurActif.positionX + 1][this.joueurActif.positionY].traversable = false;
-
-
-
-              this.joueurActif.positionX++
-              this.joueurActif.compteurDeplacement--;
-              this.joueurActif.directionDeplacement = "bas";
-              this.carte.rafraichirTableHTML();
-              //this.carte.ajouterVisuelJoueurActif(this.fileAttentes);
-
-              break;
-
-            }
-            // 1er tour de chaque joueur, droit a erreur de direction
-            else if (this.carte.verifierCaseBasDeplacement(this.joueurActif) !== true && this.joueurActif.compteurDeplacement === 3 ){
-              console.log("cette case n'existe pas");
-              this.joueurActif.directionDeplacement = null;
-              break;
-            }
-            else if (this.carte.verifierCaseBasTraversable(this.joueurActif) !== true && this.joueurActif.compteurDeplacement === 3 && this.carte.tableauColonnes[this.joueurActif.positionX + 1][this.joueurActif.positionY].typeCase === "cellulegrise" ){
-              console.log("cette case n'est pas traversable");
-              this.joueurActif.directionDeplacement = null;
-              break;
-            }
-
-
-            // occurence d'un joueur sur la case adjacente -> demarrer phase de combat automatique
-            else if (this.carte.verifierCaseBasDeplacement(this.joueurActif) === true && this.carte.verifierCaseBasTraversable(this.joueurActif) !== true && this.carte.tableauColonnes[this.joueurActif.positionX + 1][this.joueurActif.positionY].typeCase !== "cellulegrise"){
-              console.log("Un joueur est present sur la case, debut phase de combat");
-              this.joueurActif.directionDeplacement = null;
-              this.joueurActif.compteurDeplacement = 0;
-              break;
-            }
-            // occurence d'un obstacle ou case inexistante pendant le deplacement 
-            else if(this.joueurActif.compteurDeplacement <= 2 && (this.carte.verifierCaseBasDeplacement(this.joueurActif) !== true || this.carte.verifierCaseBasTraversable(this.joueurActif) !== true) ){
-              this.joueurActif.compteurDeplacement = 0;
-              console.log("aucune case disponible au deplacement sur le même axe, fin du deplacement")
-              break;
-            }   
-            // occurence d'un changement de direction pendant le deplacement
-            else if (this.joueurActif.directionDeplacement !== null || this.joueurActif.directionDeplacement !== "bas") {
-              console.log("deplacement autorisé uniquement sur le même axe");
-              break;
-            }
-        }
-
+      // fleche gauche code ascii 37
+      if (event.which == 37) {
+       this.effectuerDeplacementJoueur(this.carte.verifierCaseGaucheDeplacement(this.joueurActif),this.carte.verifierCaseGaucheTraversable(this.joueurActif),this.carte.caseGauche(this.joueurActif), "gauche")
       }
+      // fleche haut  code ascii 38
+      if (event.which == 38) {
+        this.effectuerDeplacementJoueur(this.carte.verifierCaseHautDeplacement(this.joueurActif),this.carte.verifierCaseHautTraversable(this.joueurActif),this.carte.caseHaut(this.joueurActif), "haut")
+      }
+      if (event.which == 39) { // fleche droite  code ascii 39
+        this.effectuerDeplacementJoueur(this.carte.verifierCaseDroiteDeplacement(this.joueurActif),this.carte.verifierCaseDroiteTraversable(this.joueurActif),this.carte.caseDroite(this.joueurActif), "droite")
+      }
+      if (event.which == 40) { // fleche bas  code ascii 40
+        this.effectuerDeplacementJoueur(this.carte.verifierCaseBasDeplacement(this.joueurActif),this.carte.verifierCaseBasTraversable(this.joueurActif),this.carte.caseBas(this.joueurActif), "bas")
+    }
+    if (event.which == 32) {
+      this.joueurActif.compteurDeplacement = 0;
+      console.log("vous avez choisi de terminer vos deplacement")
+    }
+  }
 
-
-    });
+    );
     if (this.joueurActif.compteurDeplacement === 0) {
       console.log("fin phase deplacement");
       console.log("changement de joueurActif");
     }
-}
+  }
 
 
   placerCasesSpeciales() {
@@ -462,16 +348,16 @@ console.log ("changement de joueur")
     this.choisirJoueurActifDepartAleatoire();
     this.actualiserOrdreFileAttente();
     this.determinerJoueurActif();
-    }
+  }
 
 
   tourParTour() {
-    
+
     //this.carte.ajouterVisuelJoueurActif2();  // NON FONCTIONNEL
     this.deplacerJoueur();
     // phase de combat
 
-   
+
   }
 
 }
@@ -480,7 +366,7 @@ console.log ("changement de joueur")
 // lancement du jeu
 const nouvellePartie = new Jeu;
 
-nouvellePartie.initialiserJeu(); 
+nouvellePartie.initialiserJeu();
 nouvellePartie.tourParTour();
 
 

@@ -86,7 +86,7 @@ class Dague extends Arme {
       super(nom,bonusAttaque, bonusDefense, portee);
   
       // specifique a EpeeEpique
-      this.nom = "Epee Epique";
+      this.nom = "EpeeEpique";
       this.bonusAttaque = 60;
       this.bonusDefense = 30;
       this.portee = 1;
@@ -110,7 +110,7 @@ class Dague extends Arme {
       super(nom,bonusAttaque, bonusDefense, portee);
   
       // specifique a CasqueEpique
-      this.nom = "EpeeEpique";
+      this.nom = "CasqueEpique";
       this.bonusAttaque = 60;
       this.bonusDefense = 30;
       this.portee = 1;

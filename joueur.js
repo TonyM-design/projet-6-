@@ -29,21 +29,25 @@ class Joueur extends Personnage {
     this.presenceValide = false;
     this.compteurDeplacement = 3;
     this.directionDeplacement = null;
-
+    this.armeADeposer = null;
     
 
     }
- 
-
-
-
     
     
     obtenirPosition(){
       console.log(`${this.positionX} + ${this.positionY}`);
       return `${this.positionX} + ${this.positionY}`;
     }
+    
+    recupererArme(caseAdjacenteChoixJoueurActif) {
+    this.equipements.unshift(caseAdjacenteChoixJoueurActif.contenu);
+    }
+  
+  
+  
+    deposerArme() {
+      this.equipements.pop();
 
 }
-
-// IMPORTANT RAJOUTER DANS LE CONSTRUCTOR UNE PROPRIETE CASE ACTUEL / CASE FUTUR
+}

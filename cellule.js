@@ -3,7 +3,7 @@ class Cellule {
         this.positionX = positionX;
         this.positionY = positionY;
         this.typeCase = typeCase;
-        this.contenu = contenu;
+        this.contenu = [];
         this.traversable = traversable;
     }
     decrire(){
