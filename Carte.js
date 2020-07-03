@@ -158,11 +158,11 @@ class Carte {
   }
 
   caseHaut() {
-    if (this.tableauColonnes[nouvellePartie.joueurActif.positionX - 1] === undefined){
+    if (this.tableauColonnes[nouvellePartie.joueurActif.positionX - 1] === undefined) {
       console.log("erreur localisé")
     }
-    else{
-    return this.tableauColonnes[nouvellePartie.joueurActif.positionX - 1][nouvellePartie.joueurActif.positionY];
+    else {
+      return this.tableauColonnes[nouvellePartie.joueurActif.positionX - 1][nouvellePartie.joueurActif.positionY];
     }
   }
 
@@ -171,11 +171,12 @@ class Carte {
   }
 
   caseBas() {
-    if (this.tableauColonnes[nouvellePartie.joueurActif.positionX + 1] === undefined){
-      console.log ("erreur localisé")
+    if (this.tableauColonnes[nouvellePartie.joueurActif.positionX + 1] === undefined) {
+      console.log("erreur localisé")
     }
-    else{
-    return this.tableauColonnes[nouvellePartie.joueurActif.positionX + 1][nouvellePartie.joueurActif.positionY];}
+    else {
+      return this.tableauColonnes[nouvellePartie.joueurActif.positionX + 1][nouvellePartie.joueurActif.positionY];
+    }
   }
 
   // VERIFICATION CASE APPARITION JOUEUR
@@ -318,52 +319,26 @@ class Carte {
 
 
   ajouterVisuelJoueurActif2(auJoueurActif) {
-        $(`.joueur${auJoueurActif.numeroJoueur}`).addClass("actif");
-      }
-    
-      enleverVisuelJoueurActif(auJoueurActif) { 
-          $(`.joueur${auJoueurActif.numeroJoueur}`).removeClass("actif");
-  
-        }
-
-
-  actualiserCellulePostDeplacement() { //  A PLACER DANS CARTE !!!!
-    if (nouvellePartie.joueurActif.equipements.length === 1) {
-      this.tableauColonnes[nouvellePartie.joueurActif.positionX][nouvellePartie.joueurActif.positionY].contenu = null;
-      this.tableauColonnes[nouvellePartie.joueurActif.positionX][nouvellePartie.joueurActif.positionY].typeCase = "celluleVide";
-      this.tableauColonnes[nouvellePartie.joueurActif.positionX][nouvellePartie.joueurActif.positionY].traversable = true;
-    }
-    else {
-      this.tableauColonnes[nouvellePartie.joueurActif.positionX][nouvellePartie.joueurActif.positionY].contenu = nouvellePartie.joueurActif.equipements[1];
-      this.tableauColonnes[nouvellePartie.joueurActif.positionX][nouvellePartie.joueurActif.positionY].typeCase = `${nouvellePartie.joueurActif.equipements[1].nom}`;
-      this.tableauColonnes[nouvellePartie.joueurActif.positionX][nouvellePartie.joueurActif.positionY].traversable = true;
-      console.log("arme deposee dans la cellule");
-      return true;
-    }
+    $(`.joueur${auJoueurActif.numeroJoueur}`).addClass("actif");
   }
 
-  depotArme() {
-    if (this.joueurActif.equipements.length !== 1) {
-      stockAncienneCase.contenu.push(this.joueurActif.equipements[1]);
-      stockAncienneCase.typeCase = `${this.joueurActif.equipements[1].nom}`;
-      stockAncienneCase.traversable = true;
-      this.joueurActif.equipements.pop();
-      console.log("test deposition arme");
-      return true;
-    }
+  enleverVisuelJoueurActif(auJoueurActif) {
+    $(`.joueur${auJoueurActif.numeroJoueur}`).removeClass("actif");
+
   }
+
 
   // le probleme vient du fait que la création du stockage emplacementOrigine se fait en meme temps que le deplacement donc resultat faussé !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  creerStockageEmplacementOrigine(joueurActif) { 
+  creerStockageEmplacementOrigine(joueurActif) {
     this.stockageEmplacementOrigine = this.tableauColonnes[joueurActif.positionX][joueurActif.positionY];
     return this.stockageEmplacementOrigine;
   }
 
   remplacerParCaseArme(joueurActif) {
-      this.stockageEmplacementOrigine.contenu = joueurActif.equipements[1];
-      this.stockageEmplacementOrigine.typeCase = `${joueurActif.equipements[1].nom}`;
-      this.stockageEmplacementOrigine.traversable = true;
-    }
+    this.stockageEmplacementOrigine.contenu = joueurActif.equipements[1];
+    this.stockageEmplacementOrigine.typeCase = `${joueurActif.equipements[1].nom}`;
+    this.stockageEmplacementOrigine.traversable = true;
+  }
 
 
 
@@ -378,7 +353,7 @@ class Carte {
 
 
   remplacerParCelluleVide2(choixdirection) {
-    
+
     choixdirection.contenu = null;
     choixdirection.typeCase = `celluleVide`;
     choixdirection.traversable = true;

@@ -112,103 +112,43 @@ class Jeu {
   // tour par tour fonctionne 
 
 
-  // GESTION ARME
-  recupererArme(caseAdjacenteChoixJoueurActif) {
-    this.joueurActif.equipements.unshift(caseAdjacenteChoixJoueurActif.contenu);
-  }
 
 
-
-  deposerArme() {
-    if (this.joueurActif.equipements.length === 2) {
-      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].contenu = this.joueurActif.equipements[1];
-      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].typeCase = `${this.joueurActif.equipements[1].nom}`;
-      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].traversable = true;
-      console.log("test propriete deposerArme");
-
-      return true
-    }
-  }
-
-
-
-  majEquipements2() {
-    if (this.carte.actualiserCellulePostDeplacement() === true) {
-      console.log("test propriete majEquipement");
-      this.joueurActif.equipements.pop();
-
-    }
-  }
-
-  actualiserCellulePostDeplacement() { //  A PLACER DANS CARTE !!!!
-    if (this.joueurActif.equipements.length === 1) {
-      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].contenu = null;
-      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].typeCase = "celluleVide";
-      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].traversable = true;
-    }
-    else {
-      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].contenu = this.joueurActif.equipements[1];
-      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].typeCase = `${this.joueurActif.equipements[1].nom}`;
-      this.carte.tableauColonnes[this.joueurActif.positionX][this.joueurActif.positionY].traversable = true;
-      console.log("arme deposee dans la cellule");
-      return true;
-    }
-  }
-
-  gererExceptionPremierDeplacement(valeur, valeur2){ // verifierCaseAdjacenteDirection() / this.carte.caseDirection
-    if (valeur !== true && this.joueurActif.compteurDeplacement === 3) {
-  
-      if (this.joueurActif.compteurDeplacement === 3) {
+  gererExceptionDeplacement2(verifierCaseDirectionDeplacement, verifierCaseDirectionTraversable, carteCaseDirection, valeurDirectionDplacementJoueur) {
+    // EXCEPTION PREMIER TOUR
+    if (this.joueurActif.compteurDeplacement === 3) {
+      if (verifierCaseDirectionDeplacement === false) {
         console.log("cette case n'existe pas");
         this.joueurActif.directionDeplacement = null;
-        return true;
       }
-      if (this.joueurActif.compteurDeplacement === 3 && valeur2.typeCase === "cellulegrise") {
+      else if (carteCaseDirection.typeCase === "cellulegrise") {
         console.log("cette case n'est pas traversable");
         this.joueurActif.directionDeplacement = null;
-        return true;
       }
 
     }
-    else {return false}
-}
+    // FIN EXCEPTION PREMIER TOUR
 
+    // OCCURENCE CHANGEMENT DE DIRECTION DURANT DEPLACEMENT
+    else if (this.joueurActif.directionDeplacement !== null && this.joueurActif.directionDeplacement !== valeurDirectionDplacementJoueur) {
+      console.log("deplacement autorisé uniquement sur le même axe");
+    }
+    // OCCURENCE PRESENCE D'UN JOUEUR SUR LA CASE DE DESTINATION
+    else if (verifierCaseDirectionDeplacement === true && verifierCaseDirectionTraversable === false && carteCaseDirection.typeCase !== "cellulegrise") {
+      console.log("Un joueur est present sur la case, debut phase de combat");
+      this.joueurActif.directionDeplacement = null;
+      this.joueurActif.compteurDeplacement = 0;
+      this.carte.enleverVisuelJoueurActif(this.joueurActif);
+    }
 
-gererExceptionDeplacement2(verifierCaseDirectionDeplacement, verifierCaseDirectionTraversable, carteCaseDirection, valeurDirectionDplacementJoueur){
-// EXCEPTION PREMIER TOUR
-  if ( this.joueurActif.compteurDeplacement === 3){
-   if (verifierCaseDirectionDeplacement === false){
-    console.log("cette case n'existe pas");
-    this.joueurActif.directionDeplacement = null;     
-   }
-   else if  ( carteCaseDirection.typeCase === "cellulegrise"){
-    console.log("cette case n'est pas traversable");
-    this.joueurActif.directionDeplacement = null;
-   }
+    // OCCURENCE OBSTACLE OU CASE INEXISTANTE 
+    else if ((verifierCaseDirectionDeplacement === false || verifierCaseDirectionTraversable === false) && this.joueurActif.compteurDeplacement <= 2) {
+      this.joueurActif.compteurDeplacement = 0;
+      this.carte.enleverVisuelJoueurActif(this.joueurActif);
+      console.log("aucune case disponible au deplacement sur le même axe, fin du deplacement")
+    }
 
- }
-// FIN EXCEPTION PREMIER TOUR
-
-// OCCURENCE CHANGEMENT DE DIRECTION DURANT DEPLACEMENT
-else if (this.joueurActif.directionDeplacement !== null && this.joueurActif.directionDeplacement !== valeurDirectionDplacementJoueur ){
-  console.log("deplacement autorisé uniquement sur le même axe");
-}
-// OCCURENCE PRESENCE D'UN JOUEUR SUR LA CASE DE DESTINATION
- else if (verifierCaseDirectionDeplacement === true && verifierCaseDirectionTraversable === false && carteCaseDirection.typeCase !== "cellulegrise") {
-  console.log("Un joueur est present sur la case, debut phase de combat");
-  this.joueurActif.directionDeplacement = null;
-  this.joueurActif.compteurDeplacement = 0;
-  this.carte.enleverVisuelJoueurActif(this.joueurActif);
-}
-
-// OCCURENCE OBSTACLE OU CASE INEXISTANTE 
-else if ((verifierCaseDirectionDeplacement === false || verifierCaseDirectionTraversable === false) && this.joueurActif.compteurDeplacement <= 2) {
-  this.joueurActif.compteurDeplacement = 0;
-  this.carte.enleverVisuelJoueurActif(this.joueurActif);
-  console.log("aucune case disponible au deplacement sur le même axe, fin du deplacement")
-}
-
-}
+  }
 
 
   majProprietesJoueurActif() {
@@ -234,22 +174,22 @@ else if ((verifierCaseDirectionDeplacement === false || verifierCaseDirectionTra
     }
   }
 
-  
-effectuerDeplacementJoueur(verifierCaseDirectionDeplacement,  verifierCaseDirectionTraversable, carteCaseDirection, valeurDirectionDplacementJoueur){
-  if ((verifierCaseDirectionDeplacement === true) && (this.joueurActif.directionDeplacement === null || this.joueurActif.directionDeplacement === valeurDirectionDplacementJoueur) && (this.joueurActif.compteurDeplacement !== 0) && verifierCaseDirectionTraversable === true) {
+
+  effectuerDeplacementJoueur(verifierCaseDirectionDeplacement, verifierCaseDirectionTraversable, carteCaseDirection, valeurDirectionDplacementJoueur) {
+    if ((verifierCaseDirectionDeplacement === true) && (this.joueurActif.directionDeplacement === null || this.joueurActif.directionDeplacement === valeurDirectionDplacementJoueur) && (this.joueurActif.compteurDeplacement !== 0) && verifierCaseDirectionTraversable === true) {
       console.log("test gauche valide");
-  
+
       // SI AU DEPLACEMENT PRECEDENT LE JOUEUR A RECUPERE UNE ARME
       if (this.joueurActif.equipements.length !== 1) {
         this.carte.creerStockageEmplacementOrigine(this.joueurActif);
         this.carte.remplacerParCaseArme(this.joueurActif); // la case arme est créer a l'adresse du contenu de stockageCaseJoueur
         this.joueurActif.deposerArme(); // on supprime l'arme de l'equipements[]
-        this.carte.remplacerParCaseJoueur(carteCaseDirection); 
+        this.carte.remplacerParCaseJoueur(carteCaseDirection);
         this.majProprietesJoueurActif();
         this.carte.rafraichirTableHTML();
       }
-  
-  
+
+
       // OCCURENCE CASE ARME
       else if (carteCaseDirection.typeCase !== "celluleVide") {
         this.carte.creerStockageEmplacementOrigine(this.joueurActif);
@@ -259,25 +199,25 @@ effectuerDeplacementJoueur(verifierCaseDirectionDeplacement,  verifierCaseDirect
         this.majProprietesJoueurActif();
         this.carte.rafraichirTableHTML();
       }
-  
+
       // OCCURENCE CELLULE VIDE
-  
+
       else if (carteCaseDirection.typeCase === "celluleVide") {
         this.carte.creerStockageEmplacementOrigine(this.joueurActif);
         this.carte.remplacerParCelluleVide();
         this.carte.remplacerParCaseJoueur(carteCaseDirection);
         this.majProprietesJoueurActif();
         this.carte.rafraichirTableHTML();
-  
+
       }
     }
-  
-  
-    this.gererExceptionDeplacement2(verifierCaseDirectionDeplacement,  verifierCaseDirectionTraversable, carteCaseDirection, valeurDirectionDplacementJoueur)
+
+
+    this.gererExceptionDeplacement2(verifierCaseDirectionDeplacement, verifierCaseDirectionTraversable, carteCaseDirection, valeurDirectionDplacementJoueur)
     this.carte.ajouterVisuelJoueurActif2(this.joueurActif);
-  
+
   }
-  
+
   // DEPLACEMENT JOUEUR
   verifierSiChangementJoueur() {
     if (this.joueurActif.compteurDeplacement === 0) {
@@ -302,23 +242,23 @@ effectuerDeplacementJoueur(verifierCaseDirectionDeplacement,  verifierCaseDirect
 
       // fleche gauche code ascii 37
       if (event.which == 37) {
-       this.effectuerDeplacementJoueur(this.carte.verifierCaseGaucheDeplacement(this.joueurActif),this.carte.verifierCaseGaucheTraversable(this.joueurActif),this.carte.caseGauche(this.joueurActif), "gauche")
+        this.effectuerDeplacementJoueur(this.carte.verifierCaseGaucheDeplacement(this.joueurActif), this.carte.verifierCaseGaucheTraversable(this.joueurActif), this.carte.caseGauche(this.joueurActif), "gauche")
       }
       // fleche haut  code ascii 38
       if (event.which == 38) {
-        this.effectuerDeplacementJoueur(this.carte.verifierCaseHautDeplacement(this.joueurActif),this.carte.verifierCaseHautTraversable(this.joueurActif),this.carte.caseHaut(this.joueurActif), "haut")
+        this.effectuerDeplacementJoueur(this.carte.verifierCaseHautDeplacement(this.joueurActif), this.carte.verifierCaseHautTraversable(this.joueurActif), this.carte.caseHaut(this.joueurActif), "haut")
       }
       if (event.which == 39) { // fleche droite  code ascii 39
-        this.effectuerDeplacementJoueur(this.carte.verifierCaseDroiteDeplacement(this.joueurActif),this.carte.verifierCaseDroiteTraversable(this.joueurActif),this.carte.caseDroite(this.joueurActif), "droite")
+        this.effectuerDeplacementJoueur(this.carte.verifierCaseDroiteDeplacement(this.joueurActif), this.carte.verifierCaseDroiteTraversable(this.joueurActif), this.carte.caseDroite(this.joueurActif), "droite")
       }
       if (event.which == 40) { // fleche bas  code ascii 40
-        this.effectuerDeplacementJoueur(this.carte.verifierCaseBasDeplacement(this.joueurActif),this.carte.verifierCaseBasTraversable(this.joueurActif),this.carte.caseBas(this.joueurActif), "bas")
+        this.effectuerDeplacementJoueur(this.carte.verifierCaseBasDeplacement(this.joueurActif), this.carte.verifierCaseBasTraversable(this.joueurActif), this.carte.caseBas(this.joueurActif), "bas")
+      }
+      if (event.which == 32) {
+        this.joueurActif.compteurDeplacement = 0;
+        console.log("vous avez choisi de terminer vos deplacement")
+      }
     }
-    if (event.which == 32) {
-      this.joueurActif.compteurDeplacement = 0;
-      console.log("vous avez choisi de terminer vos deplacement")
-    }
-  }
 
     );
     if (this.joueurActif.compteurDeplacement === 0) {
