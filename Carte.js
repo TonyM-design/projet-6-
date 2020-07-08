@@ -149,33 +149,56 @@ class Carte {
         console.log("cette case n'est pas traversable");
         return false;
       }
+
       else { return true }
     }
   }
 
-  caseGauche() {
-    return this.tableauColonnes[nouvellePartie.joueurActif.positionX][nouvellePartie.joueurActif.positionY - 1];
+  verifierCaseDeplacement(caseDirection){
+        if (caseDirection === undefined) {
+      console.log("cette case n'existe pas");
+      return false;
+    }
+    
+    else { return true }
+
   }
 
-  caseHaut() {
-    if (this.tableauColonnes[nouvellePartie.joueurActif.positionX - 1] === undefined) {
+  verifierCaseTraversable(caseDirection){
+    if (this.verifierCaseDeplacement(caseDirection) === true) {
+      if (this.tableauColonnes[caseDirection.positionX][caseDirection.positionY].traversable === false) {
+        console.log("cette case n'est pas traversable");
+        return false;
+      }
+      else { return true }
+    }
+
+
+  }
+
+  caseGauche(joueurActif) {
+    return this.tableauColonnes[joueurActif.positionX][joueurActif.positionY - 1];
+  }
+
+  caseHaut(joueurActif) {
+    if (this.tableauColonnes[joueurActif.positionX - 1] === undefined) {
       console.log("erreur localisé")
     }
     else {
-      return this.tableauColonnes[nouvellePartie.joueurActif.positionX - 1][nouvellePartie.joueurActif.positionY];
+      return this.tableauColonnes[joueurActif.positionX - 1][joueurActif.positionY];
     }
   }
 
-  caseDroite() {
-    return this.tableauColonnes[nouvellePartie.joueurActif.positionX][nouvellePartie.joueurActif.positionY + 1];
+  caseDroite(joueurActif) {
+    return this.tableauColonnes[joueurActif.positionX][joueurActif.positionY + 1];
   }
 
-  caseBas() {
-    if (this.tableauColonnes[nouvellePartie.joueurActif.positionX + 1] === undefined) {
+  caseBas(joueurActif) {
+    if (this.tableauColonnes[joueurActif.positionX + 1] === undefined) {
       console.log("erreur localisé")
     }
     else {
-      return this.tableauColonnes[nouvellePartie.joueurActif.positionX + 1][nouvellePartie.joueurActif.positionY];
+      return this.tableauColonnes[joueurActif.positionX + 1][joueurActif.positionY];
     }
   }
 
@@ -349,16 +372,6 @@ class Carte {
     this.stockageEmplacementOrigine.contenu = null;
     this.stockageEmplacementOrigine.typeCase = `celluleVide`;
     this.stockageEmplacementOrigine.traversable = true;
-  }
-
-
-  remplacerParCelluleVide2(choixdirection) {
-
-    choixdirection.contenu = null;
-    choixdirection.typeCase = `celluleVide`;
-    choixdirection.traversable = true;
-
-
   }
 
   remplacerParCaseJoueur(caseSuivante) { // VALABLE UNIQUEMENT POUR LE GAUCHE -> rendre plus generique !
