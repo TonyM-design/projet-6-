@@ -11,6 +11,7 @@ class Carte {
     this.caseAVerifier = "";
     this.stockageEmplacementOrigine = null;
     this.caseDejaRemplace = null;
+    this.genererCarteVierge();
   }
 
   genererCarteVierge() {
@@ -35,136 +36,19 @@ class Carte {
 
   }
 
-  // deux fonctions pour verifier l'existence dans tableau colonne de la valeur X ou Y qu'on va modifier pour generer la case adjacente
-  // OK
-  verifierValeurPositionX(valeurAVerifier) {  // valeur a vérifier = positionX ++ , positionX --
-    if (this.tableauColonnes[valeurAVerifier] !== undefined) {
-      return valeurAVerifier;
-    }
-    else {
-      if (valeurAVerifier < 0) {
-        valeurAVerifier++;
-        return valeurAVerifier;
-      }
-      if (valeurAVerifier > this.tableauColonnes.length) {
-        valeurAVerifier = this.tableauColonnes.length
-        return valeurAVerifier;
-      }
-
-    }
-  }
-
-  // OK
-  verifierValeurPositionY(valeurAVerifier) {  // valeur a vérifier =  position Y++, position Y--
-    if (this.tableauColonnes[0][valeurAVerifier] !== undefined) {
-      return valeurAVerifier;
-    }
-    else {
-      if (valeurAVerifier < 0) {
-        valeurAVerifier++;
-        return valeurAVerifier;
-      }
-      if (valeurAVerifier > this.tableauColonnes[0].length) {
-        valeurAVerifier = this.tableauColonnes[0].length
-        return valeurAVerifier
-      }
-
-    }
-  }
-
-
-
   // SECTION DEPLACEMENT 
 
-  verifierCaseHautDeplacement(caseJoueur) {
-    if (this.tableauColonnes[caseJoueur.positionX - 1] === undefined) {
+  verifierCaseDeplacement(caseDirection) {
+    if (caseDirection === undefined) {
       console.log("cette case n'existe pas");
       return false;
     }
-    else { return true }
-  }
 
-  verifierCaseHautTraversable(caseJoueur) {
-    if (this.verifierCaseHautDeplacement(caseJoueur) === true) {
-      if (this.tableauColonnes[caseJoueur.positionX - 1][caseJoueur.positionY].traversable === false) {
-        console.log("cette case n'est pas traversable");
-        return false;
-      }
-      else { return true }
-    }
-  }
-
-
-
-  verifierCaseBasDeplacement(caseJoueur) {
-    if (this.tableauColonnes[caseJoueur.positionX + 1] === undefined) {
-      console.log("cette case n'existe pas");
-      return false;
-    }
-    else { return true }
-  }
-
-  verifierCaseBasTraversable(caseJoueur) {
-    if (this.verifierCaseBasDeplacement(caseJoueur) === true) {
-      if (this.tableauColonnes[caseJoueur.positionX + 1][caseJoueur.positionY].traversable === false) {
-        console.log("cette case n'est pas traversable");
-        return false;
-      }
-      else { return true }
-    }
-  }
-
-
-  verifierCaseDroiteDeplacement(caseJoueur) {
-    if (this.tableauColonnes[caseJoueur.positionX][caseJoueur.positionY + 1] === undefined) {
-      console.log("cette case n'existe pas");
-      return false;
-    }
-    else { return true }
-  }
-
-
-  verifierCaseDroiteTraversable(caseJoueur) {
-    if (this.verifierCaseDroiteDeplacement(caseJoueur) === true) {
-      if (this.tableauColonnes[caseJoueur.positionX][caseJoueur.positionY + 1].traversable === false) {
-        console.log("cette case n'est pas traversable");
-        return false;
-      }
-      else { return true }
-    }
-  }
-
-
-  verifierCaseGaucheDeplacement(caseJoueur) {
-    if (this.tableauColonnes[caseJoueur.positionX][caseJoueur.positionY - 1] === undefined) {
-      console.log("cette case n'existe pas");
-      return false;
-    }
-    else { return true }
-  }
-
-  verifierCaseGaucheTraversable(caseJoueur) {
-    if (this.verifierCaseGaucheDeplacement(caseJoueur) === true) {
-      if (this.tableauColonnes[caseJoueur.positionX][caseJoueur.positionY - 1].traversable === false) {
-        console.log("cette case n'est pas traversable");
-        return false;
-      }
-
-      else { return true }
-    }
-  }
-
-  verifierCaseDeplacement(caseDirection){
-        if (caseDirection === undefined) {
-      console.log("cette case n'existe pas");
-      return false;
-    }
-    
     else { return true }
 
   }
 
-  verifierCaseTraversable(caseDirection){
+  verifierCaseTraversable(caseDirection) {
     if (this.verifierCaseDeplacement(caseDirection) === true) {
       if (this.tableauColonnes[caseDirection.positionX][caseDirection.positionY].traversable === false) {
         console.log("cette case n'est pas traversable");
@@ -216,6 +100,35 @@ class Carte {
     return true;
   }
 
+
+  detecterAdversaire(carteCaseDirection) {
+    if (carteCaseDirection !== undefined && carteCaseDirection.traversable === false && carteCaseDirection.typeCase !== "cellulegrise") {
+      console.log("joueurDetecté");
+      return true
+    }
+  }
+
+  determinerPositionAdversaireCasesAdjacentes(joueurActif) {
+    if (this.detecterAdversaire(this.caseGauche(joueurActif)) === true) {
+      return this.caseGauche(joueurActif);
+    }
+
+    else if (this.detecterAdversaire(this.caseHaut(joueurActif)) === true) {
+      return this.caseHaut(joueurActif);
+    }
+
+    else if (this.detecterAdversaire(this.caseDroite(joueurActif)) === true) {
+      return this.caseDroite(joueurActif);
+    }
+
+    else if (this.detecterAdversaire(this.caseBas(joueurActif)) === true) {
+      return this.caseBas(joueurActif);
+    }
+    else {
+      return false;
+    }
+  }
+
   // PLACEMENT DES CASES SPECIALES
   ajouterJoueurCarte(listeJoueurs) {
     for (var i = 0; i < listeJoueurs.length; i++) {
@@ -233,15 +146,12 @@ class Carte {
     }
   }
 
-
-
   ajouterArmeCarte() {
-
-    const mapTypeArmes = new Map([[0, 'AnneauSimple'],
+    const mapTypeArmes = new Map([
     [1, 'AnneauEpique'],
     [2, 'BouclierSimple'],
     [3, 'BouclierEpique'],
-    [4, 'EpeeSimple'],
+    [4, 'AnneauSimple'],
     [5, 'EpeeEpique'],
     [6, 'CasqueSimple'],
     [7, 'CasqueEpique'],
@@ -250,7 +160,7 @@ class Carte {
     while (this.nombreArmesPresentes < this.nombreArmes) {
       const caseArme = this.selectionCelluleAleatoire();
       if (caseArme.typeCase == "celluleVide") {
-        caseArme.typeCase = mapTypeArmes.get(genererAleatoire(0, 7));
+        caseArme.typeCase = mapTypeArmes.get(genererAleatoire(1, 7));
         switch (caseArme.typeCase) {
           case 'AnneauSimple':
             // créer l'objet AnneauSImple
@@ -341,8 +251,10 @@ class Carte {
   }
 
 
-  ajouterVisuelJoueurActif2(auJoueurActif) {
+  ajouterVisuelJoueurActif(auJoueurActif) {
+    $(`.joueur${auJoueurActif.numeroJoueur}`).addClass("visuelVibration");
     $(`.joueur${auJoueurActif.numeroJoueur}`).addClass("actif");
+
   }
 
   enleverVisuelJoueurActif(auJoueurActif) {
@@ -350,8 +262,117 @@ class Carte {
 
   }
 
+  /* NOUVEAU TEST AJOUT VISUEL 30/07 14h*/
+  ajouterVisuelDeplacement(joueurActif, caseDirection) {
+    if (joueurActif.compteurDeplacement < 3) {
+      this.ajouterVisuelDeplacementDirection(joueurActif, caseDirection);
+    }
+    else {
+      this.ajouterVisuelDeplacementDisponibleOrigine(joueurActif)
+    }
+  }
 
-  // le probleme vient du fait que la création du stockage emplacementOrigine se fait en meme temps que le deplacement donc resultat faussé !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  ajouterVisuelDeplacementDirection(joueurActif, caseDirection) { // valide
+
+    for (let k = 0; k < joueurActif.compteurDeplacement; k++) {
+      console.log("test ajout animation deplacement")
+      if (caseDirection.traversable === true) {
+        if (joueurActif.directionDeplacement === "gauche") {
+          $(`#cellule${caseDirection.positionX}${caseDirection.positionY - k}`).addClass("visuelVibration");
+        }
+        else if (joueurActif.directionDeplacement === "haut") {
+          $(`#cellule${caseDirection.positionX - k}${caseDirection.positionY}`).addClass("visuelVibration");
+        }
+        else if (joueurActif.directionDeplacement === "droite") {
+          $(`#cellule${caseDirection.positionX}${caseDirection.positionY + k}`).addClass("visuelVibration");
+        }
+        else if (joueurActif.directionDeplacement === "bas") {
+          $(`#cellule${caseDirection.positionX + k}${caseDirection.positionY}`).addClass("visuelVibration");
+        }
+      }
+      else { break }
+    }
+  }
+
+
+  ajouterVisuelDeplacementDisponibleOrigine(joueurActif) {
+
+    for (let k = 0; k < joueurActif.compteurDeplacement + 1; k++) {
+      if (this.tableauColonnes[joueurActif.positionX][joueurActif.positionY - k] !== undefined) {
+        if (this.tableauColonnes[joueurActif.positionX][joueurActif.positionY - k].typeCase === 'cellulegrise') {
+         // $(`#cellule${joueurActif.positionX}${joueurActif.positionY - k}`).addClass("visuelVibrationOccupee");
+          break;
+        }
+        else {
+          $(`#cellule${joueurActif.positionX}${joueurActif.positionY - k}`).addClass("visuelVibration");
+        }
+      }
+      else { break }
+    }
+    for (let k = 0; k < joueurActif.compteurDeplacement + 1; k++) {
+      if (this.tableauColonnes[joueurActif.positionX - k] !== undefined) {
+        if (this.tableauColonnes[joueurActif.positionX - k][joueurActif.positionY].typeCase === 'cellulegrise') {
+          //$(`#cellule${joueurActif.positionX - k}${joueurActif.positionY}`).addClass("visuelVibrationOccupee");
+          break;
+        }
+        else {
+          $(`#cellule${joueurActif.positionX - k}${joueurActif.positionY}`).addClass("visuelVibration");
+        }
+      }
+      else { break }
+    }
+    for (let k = 0; k < joueurActif.compteurDeplacement + 1; k++) {
+      if (this.tableauColonnes[joueurActif.positionX][joueurActif.positionY + k] !== undefined) {
+        if (this.tableauColonnes[joueurActif.positionX][joueurActif.positionY + k].typeCase === 'cellulegrise') {
+         // $(`#cellule${joueurActif.positionX}${joueurActif.positionY + k}`).addClass("visuelVibrationOccupee");
+          break;
+        }
+        else {
+          $(`#cellule${joueurActif.positionX}${joueurActif.positionY + k}`).addClass("visuelVibration");
+        }
+      }
+      else { break }
+    }
+
+    for (let k = 0; k < joueurActif.compteurDeplacement + 1; k++) {
+      if (this.tableauColonnes[joueurActif.positionX + k] !== undefined) {
+        if (this.tableauColonnes[joueurActif.positionX + k][joueurActif.positionY].typeCase === 'cellulegrise') {
+          //$(`#cellule${joueurActif.positionX + k}${joueurActif.positionY}`).addClass("visuelVibrationOccupee");
+          break;
+        }
+        else {
+          $(`#cellule${joueurActif.positionX + k}${joueurActif.positionY}`).addClass("visuelVibration");
+        }
+      }
+      else { break }
+    }
+
+  }
+
+
+
+  testajouterVisuelDeplacementDisponibleOrigine(joueurActif) {
+    if (joueurActif.compteurDeplacement === 3) {
+      for (let k = 0; k < joueurActif.compteurDeplacement + 1; k++) {
+        if (this.tableauColonnes[joueurActif.positionX][joueurActif.positionY - k].traversable === true && this.tableauColonnes[joueurActif.positionX][joueurActif.positionY - k] !== undefined) {
+          $(`#cellule${joueurActif.positionX}${joueurActif.positionY - k}`).addClass("visuelVibration");
+        }
+        if (this.tableauColonnes[joueurActif.positionX - k][joueurActif.positionX].traversable === true && this.tableauColonnes[joueurActif.positionX - k][joueurActif.positionX] !== undefined) {
+          $(`#cellule${joueurActif.positionX - k}${joueurActif.positionY}`).addClass("visuelVibration");
+        }
+        if (this.tableauColonnes[joueurActif.positionX][joueurActif.positionY + k].traversable === true && this.tableauColonnes[joueurActif.positionX][joueurActif.positionY + k] !== undefined) {
+          $(`#cellule${joueurActif.positionX}${joueurActif.positionY + k}`).addClass("visuelVibration");
+        }
+        if (this.tableauColonnes[joueurActif.positionX + k][joueurActif.positionY].traversable === true && this.tableauColonnes[joueurActif.positionX + k][joueurActif.positionY] !== undefined) {
+          $(`#cellule${joueurActif.positionX + k}${joueurActif.positionY}`).addClass("visuelVibration");
+        }
+
+      }
+    }
+  }
+
+
   creerStockageEmplacementOrigine(joueurActif) {
     this.stockageEmplacementOrigine = this.tableauColonnes[joueurActif.positionX][joueurActif.positionY];
     return this.stockageEmplacementOrigine;
@@ -363,6 +384,11 @@ class Carte {
     this.stockageEmplacementOrigine.traversable = true;
   }
 
+  testremplacerParCaseArme(joueurActif) {
+    this.stockageEmplacementOrigine.contenu = joueurActif.deposerArme();
+    this.stockageEmplacementOrigine.typeCase = `${this.stockageEmplacementOrigine.nom}`;
+    this.stockageEmplacementOrigine.traversable = true;
+  }
 
 
 
@@ -382,3 +408,7 @@ class Carte {
   }
 
 }
+/*
+this.carte.genererCarteVierge();
+this.carte.ajouterVisuelDeplacementDisponibleOrigine(this.joueurActif)
+*/
