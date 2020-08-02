@@ -277,7 +277,8 @@ class Carte {
 
     for (let k = 0; k < joueurActif.compteurDeplacement; k++) {
       console.log("test ajout animation deplacement")
-      if (caseDirection.traversable === true) {
+      if ( caseDirection !== undefined){
+      if (caseDirection.traversable === true ) {
         if (joueurActif.directionDeplacement === "gauche") {
           $(`#cellule${caseDirection.positionX}${caseDirection.positionY - k}`).addClass("visuelVibration");
         }
@@ -294,6 +295,7 @@ class Carte {
       else { break }
     }
   }
+  }
 
 
   ajouterVisuelDeplacementDisponibleOrigine(joueurActif) {
@@ -301,7 +303,6 @@ class Carte {
     for (let k = 0; k < joueurActif.compteurDeplacement + 1; k++) {
       if (this.tableauColonnes[joueurActif.positionX][joueurActif.positionY - k] !== undefined) {
         if (this.tableauColonnes[joueurActif.positionX][joueurActif.positionY - k].typeCase === 'cellulegrise') {
-         // $(`#cellule${joueurActif.positionX}${joueurActif.positionY - k}`).addClass("visuelVibrationOccupee");
           break;
         }
         else {
@@ -313,7 +314,6 @@ class Carte {
     for (let k = 0; k < joueurActif.compteurDeplacement + 1; k++) {
       if (this.tableauColonnes[joueurActif.positionX - k] !== undefined) {
         if (this.tableauColonnes[joueurActif.positionX - k][joueurActif.positionY].typeCase === 'cellulegrise') {
-          //$(`#cellule${joueurActif.positionX - k}${joueurActif.positionY}`).addClass("visuelVibrationOccupee");
           break;
         }
         else {
@@ -325,7 +325,6 @@ class Carte {
     for (let k = 0; k < joueurActif.compteurDeplacement + 1; k++) {
       if (this.tableauColonnes[joueurActif.positionX][joueurActif.positionY + k] !== undefined) {
         if (this.tableauColonnes[joueurActif.positionX][joueurActif.positionY + k].typeCase === 'cellulegrise') {
-         // $(`#cellule${joueurActif.positionX}${joueurActif.positionY + k}`).addClass("visuelVibrationOccupee");
           break;
         }
         else {
@@ -338,7 +337,6 @@ class Carte {
     for (let k = 0; k < joueurActif.compteurDeplacement + 1; k++) {
       if (this.tableauColonnes[joueurActif.positionX + k] !== undefined) {
         if (this.tableauColonnes[joueurActif.positionX + k][joueurActif.positionY].typeCase === 'cellulegrise') {
-          //$(`#cellule${joueurActif.positionX + k}${joueurActif.positionY}`).addClass("visuelVibrationOccupee");
           break;
         }
         else {
